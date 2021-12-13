@@ -48,4 +48,16 @@ dependencies {
 
     // material design
     implementation 'com.google.android.material:material:1.4.0'
+
+    // Import the BoM for the Firebase platform
+    implementation platform('com.google.firebase:firebase-bom:29.0.0')
+
+    // Declare the dependency for the Cloud Firestore library
+    // Firebase Cloud Store
+    implementation 'com.google.firebase:firebase-firestore-ktx'
+    // Firebase Storage
+    implementation 'com.google.firebase:firebase-storage-ktx'
+
+    // android-lottie = https://github.com/airbnb/lottie-android
+    implementation "com.airbnb.android:lottie:4.1.0"
 }
