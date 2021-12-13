@@ -5,20 +5,26 @@ import android.os.Bundle
 import androidx.core.view.isGone
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.mywiki_interviewtest.Ext.setOnSingleClickListener
 import com.example.mywiki_interviewtest.R
 import com.example.mywiki_interviewtest.databinding.ActivityMainBinding
+import com.example.mywiki_interviewtest.viewModel.MyViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val uploadFragment by lazy { UploadFragment() }
     private val wikiFragment by lazy { WikiFragment() }
     private lateinit var binding: ActivityMainBinding
     private var showCoverContainer = true
+    private lateinit var viewModel : MyViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        viewModel = ViewModelProvider(this).get(MyViewModel::class.java)
 
         // initial fragment is wikiFragment
         binding.bottomNavigation.selectedItemId = R.id.item_wiki

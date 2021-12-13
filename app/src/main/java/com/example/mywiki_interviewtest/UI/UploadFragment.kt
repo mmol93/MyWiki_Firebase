@@ -1,7 +1,6 @@
 package com.example.mywiki_interviewtest.UI
 
 import android.Manifest
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.DialogInterface
@@ -12,35 +11,48 @@ import android.graphics.ImageDecoder
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultRegistry
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.PermissionChecker.checkCallingOrSelfPermission
 import androidx.core.view.isGone
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.mywiki_interviewtest.Ext.setOnSingleClickListener
 import com.example.mywiki_interviewtest.R
 import com.example.mywiki_interviewtest.databinding.FragmentUploadBinding
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.example.mywiki_interviewtest.model.Post
+import com.example.mywiki_interviewtest.util.ApiResponse
+import com.example.mywiki_interviewtest.viewModel.MyViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class UploadFragment : Fragment() {
     private lateinit var binding: FragmentUploadBinding
+    lateinit var viewModel : MyViewModel
     private var profileBitmap: Bitmap? = null
     private val startForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             val imageUrl = it.data?.data
-            if (it.resultCode == RESULT_OK && imageUrl != null){
+            if (it.resultCode == RESULT_OK && imageUrl != null) {
                 // Uri에 있는 image 데이터를 bitmap으로 변환하기
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     profileBitmap = ImageDecoder
-                        .decodeBitmap(ImageDecoder.createSource(requireContext().getContentResolver(), imageUrl))
-                }else{
+                        .decodeBitmap(
+                            ImageDecoder.createSource(
+                                requireContext().getContentResolver(),
+                                imageUrl
+                            )
+                        )
+                } else {
                     profileBitmap = MediaStore
                         .Images.Media.getBitmap(requireContext().getContentResolver(), imageUrl)
                 }
@@ -49,7 +61,6 @@ class UploadFragment : Fragment() {
                 binding.addPictureButton.isGone = true
             }
         }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -60,6 +71,8 @@ class UploadFragment : Fragment() {
             container,
             false
         )
+        viewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
+
         binding.clearButton.setOnSingleClickListener {
             // Make dialog for clear
             val dialogBuilder = AlertDialog.Builder(context)
@@ -77,7 +90,7 @@ class UploadFragment : Fragment() {
             }
         }
 
-        fun getPictureFromGallery(){
+        fun getPictureFromGallery() {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
             intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NO_HISTORY
@@ -116,10 +129,31 @@ class UploadFragment : Fragment() {
         }
 
         binding.saveButton.setOnSingleClickListener {
-            // put data in Firebase Cloud Store
-            val db = Firebase.firestore
+            val title = binding.titleEditText.text.toString()
+            val description = binding.descriptionEditText.text.toString()
+
+            val post = Post(title = title, description = description)
+
+            CoroutineScope(Dispatchers.IO).launch {
+                addPost(post)
+            }
 
         }
         return binding.root
+    }
+    suspend fun addPost(post:Post){
+        viewModel.addPost(post).collect {
+            when(it){
+                is ApiResponse.Success -> {
+                    //todo 화면 클리어
+                }
+                is ApiResponse.Loading -> {
+                    //todo 화면 로딩
+                }
+                is ApiResponse.Error -> {
+                    //todo 에러 처리(토스트 등)
+                }
+            }
+        }
     }
 }
