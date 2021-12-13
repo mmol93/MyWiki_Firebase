@@ -1,14 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="uploadFragment" />
+        android:layout_height="match_parent">
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="30dp">
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/title_editText_layout"
+                android:layout_width="match_parent"
+                android:maxWidth="420dp"
+                android:layout_height="wrap_content"
+                app:endIconMode="clear_text"
+                android:hint="Title">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/title_editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:id="@+id/addPictureContainer"
+                android:layout_width="match_parent"
+                android:maxWidth="420dp"
+                android:layout_height="200dp"
+                android:orientation="vertical"
+                android:padding="5dp"
+                android:gravity="center"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/rounded_corner_orange">
+
+                <Button
+                    android:id="@+id/addPictureButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_baseline_library_add_24"
+                    />
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_baseline_ballot_24"
+                    android:visibility="gone"/>
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/description_editText_layout"
+                android:layout_width="match_parent"
+                android:maxWidth="420dp"
+                android:layout_height="wrap_content"
+                android:minHeight="200dp"
+                app:endIconMode="clear_text"
+                android:hint="Description">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/description_editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/clearButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="15dp"
+                    android:text="Clear" />
+
+                <Button
+                    android:id="@+id/saveButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="15dp"
+                    android:text="Save" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</layout>
