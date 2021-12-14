@@ -20,7 +20,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.PermissionChecker.checkCallingOrSelfPermission
 import androidx.core.view.isGone
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.mywiki_interviewtest.Ext.hideKeyboard
@@ -44,22 +43,21 @@ import kotlinx.coroutines.launch
 class UploadFragment : Fragment() {
     private lateinit var binding: FragmentUploadBinding
     lateinit var viewModel: MyViewModel
-    private var profileBitmap: Bitmap? = null
+    private var postBitmap: Bitmap? = null
     private val startForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             val imageUrl = it.data?.data
             if (it.resultCode == RESULT_OK && imageUrl != null) {
                 // Uri에 있는 image 데이터를 bitmap으로 변환하기
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    profileBitmap = ImageDecoder
-                        .decodeBitmap(
-                            ImageDecoder.createSource(
-                                requireContext().getContentResolver(),
-                                imageUrl
-                            )
+                    postBitmap = ImageDecoder.decodeBitmap(
+                        ImageDecoder.createSource(
+                            requireContext().getContentResolver(),
+                            imageUrl
                         )
+                    )
                 } else {
-                    profileBitmap = MediaStore
+                    postBitmap = MediaStore
                         .Images.Media.getBitmap(requireContext().getContentResolver(), imageUrl)
                 }
                 Glide.with(requireContext()).load(imageUrl).into(binding.imageView)
@@ -147,9 +145,9 @@ class UploadFragment : Fragment() {
                 requireContext().showToast("Title should be at least two words")
             } else if (descriptionSize <= 9) {
                 requireContext().showToast("Description should be at least 10 words")
-            } else if (binding.imageView.drawable == null){
+            } else if (binding.imageView.drawable == null) {
                 requireContext().showToast("Please set image")
-            }else{
+            } else {
                 // 키보드 숨기기
                 requireContext().hideKeyboard(binding.descriptionEditText)
                 requireContext().hideKeyboard(binding.titleEditText)
@@ -161,6 +159,7 @@ class UploadFragment : Fragment() {
 
                 val post = Post(title = title, description = description)
                 checkPost(post)
+                FirebaseStorage.storageUpload(picturePath, postBitmap!!)
             }
         }
 
