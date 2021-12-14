@@ -20,17 +20,23 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.PermissionChecker.checkCallingOrSelfPermission
 import androidx.core.view.isGone
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.example.mywiki_interviewtest.Ext.hideKeyboard
 import com.example.mywiki_interviewtest.Ext.setOnSingleClickListener
+import com.example.mywiki_interviewtest.Ext.showToast
 import com.example.mywiki_interviewtest.R
 import com.example.mywiki_interviewtest.databinding.FragmentUploadBinding
 import com.example.mywiki_interviewtest.model.Post
 import com.example.mywiki_interviewtest.util.ApiResponse
 import com.example.mywiki_interviewtest.viewModel.MyViewModel
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -85,6 +91,10 @@ class UploadFragment : Fragment() {
                     binding.descriptionEditText.setText("")
                     binding.addPictureButton.isGone = false
                     binding.imageView.isGone = true
+
+                    // 키보드 숨기기
+                    requireContext().hideKeyboard(binding.descriptionEditText)
+                    requireContext().hideKeyboard(binding.titleEditText)
                 }
                 show()
             }
@@ -124,34 +134,82 @@ class UploadFragment : Fragment() {
             }
         }
 
-        binding.imageView.setOnSingleClickListener {
+        binding.addPictureContainer.setOnSingleClickListener {
             getPictureFromGallery()
         }
 
         binding.saveButton.setOnSingleClickListener {
+            // todo progressBar 보여주기
+
+            // 키보드 숨기기
+            requireContext().hideKeyboard(binding.descriptionEditText)
+            requireContext().hideKeyboard(binding.titleEditText)
+
+            // 데이터 업로드
             val title = binding.titleEditText.text.toString()
             val description = binding.descriptionEditText.text.toString()
 
             val post = Post(title = title, description = description)
-
-            CoroutineScope(Dispatchers.IO).launch {
-                addPost(post)
-            }
-
+            checkPost(post)
         }
+
         return binding.root
     }
+
+    fun checkPost(post: Post){
+        val db = Firebase.firestore.collection("wiki")
+
+        db.document(post.title).get().addOnSuccessListener {
+            // 이미 데이터가 있을 경우
+            if (it.data != null){
+                Log.d("Firebase", "document data: $it")
+                val dialogBuilder = AlertDialog.Builder(context)
+                dialogBuilder.apply {
+                    setTitle("Already exist")
+                    setMessage("This post is already exist")
+                    setNeutralButton("No"){ dialogInterface: DialogInterface, i: Int ->
+                        viewModel.savePermission.postValue(false)
+                    }
+                    setPositiveButton("Yes") { dialogInterface: DialogInterface, i: Int ->
+                        viewModel.savePermission.postValue(true)
+                        CoroutineScope(Dispatchers.IO).launch {
+                            addPost(post)
+                        }
+                    }
+                    show()
+                }
+            }
+            // 새로운 데이터일 경우
+            else{
+                CoroutineScope(Dispatchers.IO).launch {
+                    addPost(post)
+                }
+            }
+        }
+    }
+
     suspend fun addPost(post:Post){
         viewModel.addPost(post).collect {
             when(it){
                 is ApiResponse.Success -> {
-                    //todo 화면 클리어
+                    coroutineScope {
+                        launch(Dispatchers.Main) {
+                            requireContext().showToast("Post is uploaded")
+                            // todo progressBar 삭제하기
+                        }
+                    }
+
                 }
                 is ApiResponse.Loading -> {
                     //todo 화면 로딩
                 }
                 is ApiResponse.Error -> {
-                    //todo 에러 처리(토스트 등)
+                    coroutineScope {
+                        launch(Dispatchers.Main) {
+                            requireContext().showToast("Please check your internet connection")
+                            // todo progressBar 삭제하기
+                        }
+                    }
                 }
             }
         }

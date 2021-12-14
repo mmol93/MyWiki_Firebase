@@ -19,9 +19,15 @@ class UploadRepository {
             post.title to post.description
         )
         Log.d("Firebase", "addPost")
-        db.add(postData)
+
+        db.document(post.title).set(postData)
         emit(ApiResponse.Success(post))
     }.catch {
         emit(ApiResponse.Error("Error: ${it.message}"))
     }.flowOn(Dispatchers.IO)
+
+
+    fun uploadPicture(post:Post){
+
+    }
 }
