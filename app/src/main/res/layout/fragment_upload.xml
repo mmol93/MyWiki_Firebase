@@ -13,6 +13,12 @@
             android:gravity="center"
             android:padding="30dp">
 
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progressBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:visibility="gone" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/title_editText_layout"
@@ -33,27 +39,27 @@
             <LinearLayout
                 android:id="@+id/addPictureContainer"
                 android:layout_width="match_parent"
-                android:maxWidth="420dp"
                 android:layout_height="200dp"
-                android:orientation="vertical"
-                android:padding="5dp"
-                android:gravity="center"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
-                android:background="@drawable/rounded_corner_orange">
+                android:background="@drawable/rounded_corner_orange"
+                android:gravity="center"
+                android:maxWidth="420dp"
+                android:orientation="vertical"
+                android:padding="5dp">
 
                 <Button
                     android:id="@+id/addPictureButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ic_baseline_library_add_24"
-                    />
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/ic_baseline_library_add_24" />
+
                 <ImageView
                     android:id="@+id/imageView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_baseline_ballot_24"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout

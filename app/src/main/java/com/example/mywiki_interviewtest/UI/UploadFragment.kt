@@ -195,19 +195,23 @@ class UploadFragment : Fragment() {
                     coroutineScope {
                         launch(Dispatchers.Main) {
                             requireContext().showToast("Post is uploaded")
-                            // todo progressBar 삭제하기
+                            binding.progressBar.isGone = true
                         }
                     }
 
                 }
                 is ApiResponse.Loading -> {
-                    //todo 화면 로딩
+                    coroutineScope {
+                        launch(Dispatchers.Main) {
+                            binding.progressBar.isGone = false
+                        }
+                    }
                 }
                 is ApiResponse.Error -> {
                     coroutineScope {
                         launch(Dispatchers.Main) {
                             requireContext().showToast("Please check your internet connection")
-                            // todo progressBar 삭제하기
+                            binding.progressBar.isGone = true
                         }
                     }
                 }
