@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1081099595361",
+    "project_id": "mywiki-interviewtest",
+    "storage_bucket": "mywiki-interviewtest.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1081099595361:android:196fc3775230b5e0cd0420",
+        "android_client_info": {
+          "package_name": "com.example.mywiki_interviewtest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1081099595361-qb8jqunq9nqknuihalt86bj53jsgh02k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpErWfCC3_FP7Ksf75rASXFSKk3CGQeFg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1081099595361-qb8jqunq9nqknuihalt86bj53jsgh02k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
