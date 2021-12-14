@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         viewModel = ViewModelProvider(this).get(MyViewModel::class.java)
+        binding.lifecycleOwner = this
 
         // initial fragment is wikiFragment
         binding.bottomNavigation.selectedItemId = R.id.item_wiki

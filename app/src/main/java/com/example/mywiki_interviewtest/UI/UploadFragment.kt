@@ -1,7 +1,6 @@
 package com.example.mywiki_interviewtest.UI
 
 import android.Manifest
-import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
@@ -17,9 +16,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.PermissionChecker.checkCallingOrSelfPermission
 import androidx.core.view.isGone
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.mywiki_interviewtest.Ext.hideKeyboard
@@ -44,27 +45,28 @@ class UploadFragment : Fragment() {
     private lateinit var binding: FragmentUploadBinding
     lateinit var viewModel: MyViewModel
     private var postBitmap: Bitmap? = null
-    private val startForResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            val imageUrl = it.data?.data
-            if (it.resultCode == RESULT_OK && imageUrl != null) {
-                // Uri에 있는 image 데이터를 bitmap으로 변환하기
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    postBitmap = ImageDecoder.decodeBitmap(
-                        ImageDecoder.createSource(
-                            requireContext().getContentResolver(),
-                            imageUrl
-                        )
-                    )
-                } else {
-                    postBitmap = MediaStore
-                        .Images.Media.getBitmap(requireContext().getContentResolver(), imageUrl)
-                }
-                Glide.with(requireContext()).load(imageUrl).into(binding.imageView)
-                binding.imageView.isGone = false
-                binding.addPictureButton.isGone = true
-            }
-        }
+    val REQ_GALLERY = 0
+//    private val startForResult =
+//        registerForActivityResult(ActivityResultContracts.GetContent()) {
+//            Log.d("UploadFragment", "registerForActivityResult for imageView is called")
+//            if (it != null) {
+//                // Uri에 있는 image 데이터를 bitmap으로 변환하기
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+//                    postBitmap = ImageDecoder.decodeBitmap(
+//                        ImageDecoder.createSource(
+//                            requireContext().getContentResolver(),
+//                            it
+//                        )
+//                    )
+//                } else {
+//                    postBitmap = MediaStore
+//                        .Images.Media.getBitmap(requireContext().getContentResolver(), it)
+//                }
+//                Glide.with(requireContext()).load(it).into(binding.imageView)
+//                binding.imageView.isGone = false
+//                binding.addPictureButton.isGone = true
+//            }
+//        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -77,6 +79,7 @@ class UploadFragment : Fragment() {
             false
         )
         viewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
+        binding.uploadViewModel = viewModel
 
         binding.clearButton.setOnSingleClickListener {
             // Make dialog for clear
@@ -102,9 +105,7 @@ class UploadFragment : Fragment() {
         fun getPictureFromGallery() {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
-            intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NO_HISTORY
-            // startActivityForResult is deprecated
-            startForResult.launch(intent)
+            startActivityForResult(intent, REQ_GALLERY)
         }
 
         binding.addPictureButton.setOnSingleClickListener {
@@ -162,8 +163,31 @@ class UploadFragment : Fragment() {
                 FirebaseStorage.storageUpload(picturePath, postBitmap!!)
             }
         }
-
         return binding.root
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQ_GALLERY && resultCode == AppCompatActivity.RESULT_OK){
+            if (data!!.data != null) {
+                val uriPicture = data.data!!
+                // Uri에 있는 image 데이터를 bitmap으로 변환하기
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    postBitmap = ImageDecoder.decodeBitmap(
+                        ImageDecoder.createSource(
+                            requireContext().getContentResolver(),
+                            uriPicture
+                        )
+                    )
+                } else {
+                    postBitmap = MediaStore
+                        .Images.Media.getBitmap(requireContext().getContentResolver(), uriPicture)
+                }
+                Glide.with(requireContext()).load(uriPicture).into(binding.imageView)
+                binding.imageView.isGone = false
+                binding.addPictureButton.isGone = true
+            }
+        }
     }
 
     fun checkPost(post: Post) {
