@@ -43,7 +43,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class UploadFragment : Fragment() {
     private lateinit var binding: FragmentUploadBinding
-    lateinit var viewModel : MyViewModel
+    lateinit var viewModel: MyViewModel
     private var profileBitmap: Bitmap? = null
     private val startForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -67,6 +67,7 @@ class UploadFragment : Fragment() {
                 binding.addPictureButton.isGone = true
             }
         }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -139,35 +140,45 @@ class UploadFragment : Fragment() {
         }
 
         binding.saveButton.setOnSingleClickListener {
-            // todo progressBar 보여주기
+            // 필요한 데이터가 전부 들어가 있는지 확인
+            val titleSize = binding.titleEditText.text!!.length
+            val descriptionSize = binding.descriptionEditText.text!!.length
+            if (titleSize <= 1) {
+                requireContext().showToast("Title should be at least two words")
+            } else if (descriptionSize <= 9) {
+                requireContext().showToast("Description should be at least 10 words")
+            } else if (binding.imageView.drawable == null){
+                requireContext().showToast("Please set image")
+            }else{
+                // 키보드 숨기기
+                requireContext().hideKeyboard(binding.descriptionEditText)
+                requireContext().hideKeyboard(binding.titleEditText)
 
-            // 키보드 숨기기
-            requireContext().hideKeyboard(binding.descriptionEditText)
-            requireContext().hideKeyboard(binding.titleEditText)
+                // 데이터 업로드
+                val title = binding.titleEditText.text.toString()
+                val description = binding.descriptionEditText.text.toString()
+                val picturePath = "Wiki/${title}.jpg"
 
-            // 데이터 업로드
-            val title = binding.titleEditText.text.toString()
-            val description = binding.descriptionEditText.text.toString()
-
-            val post = Post(title = title, description = description)
-            checkPost(post)
+                val post = Post(title = title, description = description)
+                checkPost(post)
+            }
         }
 
         return binding.root
     }
 
-    fun checkPost(post: Post){
+    fun checkPost(post: Post) {
         val db = Firebase.firestore.collection("wiki")
 
         db.document(post.title).get().addOnSuccessListener {
             // 이미 데이터가 있을 경우
-            if (it.data != null){
+            if (it.data != null) {
                 Log.d("Firebase", "document data: $it")
                 val dialogBuilder = AlertDialog.Builder(context)
                 dialogBuilder.apply {
                     setTitle("Already exist")
                     setMessage("This post is already exist")
-                    setNeutralButton("No"){ dialogInterface: DialogInterface, i: Int ->
+                    setNeutralButton("No") { dialogInterface: DialogInterface, i: Int ->
                         viewModel.savePermission.postValue(false)
                     }
                     setPositiveButton("Yes") { dialogInterface: DialogInterface, i: Int ->
@@ -180,7 +191,7 @@ class UploadFragment : Fragment() {
                 }
             }
             // 새로운 데이터일 경우
-            else{
+            else {
                 CoroutineScope(Dispatchers.IO).launch {
                     addPost(post)
                 }
@@ -188,9 +199,9 @@ class UploadFragment : Fragment() {
         }
     }
 
-    suspend fun addPost(post:Post){
+    suspend fun addPost(post: Post) {
         viewModel.addPost(post).collect {
-            when(it){
+            when (it) {
                 is ApiResponse.Success -> {
                     coroutineScope {
                         launch(Dispatchers.Main) {
