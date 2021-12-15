@@ -28,20 +28,20 @@ import kotlinx.coroutines.launch
 class WikiFragment : Fragment() {
     private lateinit var binding: FragmentWikiBinding
     private lateinit var viewModel: MyViewModel
-    private lateinit var wikiAdapter : WikiRecyclerAdapter
-
+    lateinit var wikiAdapter : WikiRecyclerAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_wiki, container, false)
         viewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
-        wikiAdapter = WikiRecyclerAdapter()
+        wikiAdapter = (activity as MainActivity).wikiAdapter
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         CoroutineScope(Dispatchers.IO).launch {
             getPost()
         }

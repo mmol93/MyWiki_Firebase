@@ -9,12 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.mywiki_interviewtest.Ext.setOnSingleClickListener
 import com.example.mywiki_interviewtest.R
+import com.example.mywiki_interviewtest.UI.adapter.WikiRecyclerAdapter
 import com.example.mywiki_interviewtest.databinding.ActivityMainBinding
 import com.example.mywiki_interviewtest.viewModel.MyViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    @Inject
+    lateinit var wikiAdapter : WikiRecyclerAdapter
     private val uploadFragment by lazy { UploadFragment() }
     private val wikiFragment by lazy { WikiFragment() }
     private lateinit var binding: ActivityMainBinding
@@ -35,7 +39,8 @@ class MainActivity : AppCompatActivity() {
 
         // initial fragment is wikiFragment
         binding.bottomNavigation.selectedItemId = R.id.item_wiki
-        replaceFragment(wikiFragment)
+//        replaceFragment(wikiFragment)
+        addFragment(wikiFragment, "wiki")
 
         binding.addButton.setOnSingleClickListener {
             if (showCoverContainer) {
@@ -68,13 +73,33 @@ class MainActivity : AppCompatActivity() {
                             binding.coverContainer.isGone = false
                             binding.mainContainer.isGone = true
                         }
-                        replaceFragment(uploadFragment)
+
+                        // fragment를 보여주거나 숨기거나
+                        if (supportFragmentManager.findFragmentByTag("home") != null){
+                            showFragment(uploadFragment)
+                        }else{
+                            addFragment(uploadFragment, "home")
+                        }
+                        if (supportFragmentManager.findFragmentByTag("wiki") != null){
+                            hideFragment(wikiFragment)
+                        }
+//                        replaceFragment(uploadFragment)
                     }
                     R.id.item_wiki -> {
                         // wikiFragment에서는 항상 coverFragment 가리기
                         binding.coverContainer.isGone = true
                         binding.mainContainer.isGone = false
-                        replaceFragment(wikiFragment)
+
+                        // fragment를 보여주거나 숨기거나
+                        if (supportFragmentManager.findFragmentByTag("home") != null){
+                            hideFragment(uploadFragment)
+                        }
+                        if (supportFragmentManager.findFragmentByTag("wiki") != null){
+                            showFragment(wikiFragment)
+                        }else{
+                            addFragment(wikiFragment, "wiki")
+                        }
+//                        replaceFragment(wikiFragment)
                     }
                 }
                 true
@@ -84,5 +109,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().replace(R.id.mainContainer, fragment).commit()
+    }
+    private fun showFragment(fragment: Fragment){
+        supportFragmentManager.beginTransaction().show(fragment).commit()
+    }
+    private fun addFragment(fragment: Fragment, tag:String){
+        supportFragmentManager.beginTransaction().add(R.id.mainContainer, fragment, tag).commit()
+    }
+    private fun hideFragment(fragment: Fragment){
+        supportFragmentManager.beginTransaction().hide(fragment).commit()
     }
 }
