@@ -1,5 +1,6 @@
 package com.example.mywiki_interviewtest.UI
 
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,7 +10,10 @@ import android.view.ViewGroup
 import androidx.core.view.isGone
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.mywiki_interviewtest.R
+import com.example.mywiki_interviewtest.UI.adapter.WikiRecyclerAdapter
 import com.example.mywiki_interviewtest.databinding.FragmentWikiBinding
 import com.example.mywiki_interviewtest.util.ApiResponse
 import com.example.mywiki_interviewtest.viewModel.MyViewModel
@@ -23,7 +27,8 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class WikiFragment : Fragment() {
     private lateinit var binding: FragmentWikiBinding
-    lateinit var viewModel: MyViewModel
+    private lateinit var viewModel: MyViewModel
+    private lateinit var wikiAdapter : WikiRecyclerAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,11 +36,24 @@ class WikiFragment : Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_wiki, container, false)
         viewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
+        wikiAdapter = WikiRecyclerAdapter()
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         CoroutineScope(Dispatchers.IO).launch {
             getPost()
         }
-        return binding.root
+        initRecyclerView()
+    }
+
+
+    fun initRecyclerView(){
+        binding.wikiRecycler.apply {
+            adapter = wikiAdapter
+            layoutManager = LinearLayoutManager(activity)
+        }
     }
 
     suspend fun getPost(){
@@ -46,6 +64,7 @@ class WikiFragment : Fragment() {
                         launch(Dispatchers.Main) {
                             Log.d("WikiFragment", "getPost Data: ${it.data}")
                             binding.progressBar.isGone = true
+                            wikiAdapter.differ.submitList(it.data)
                         }
                     }
                 }
