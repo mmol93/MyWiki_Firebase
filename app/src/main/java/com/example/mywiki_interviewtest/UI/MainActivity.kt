@@ -2,6 +2,7 @@ package com.example.mywiki_interviewtest.UI
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -19,6 +20,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var showCoverContainer = true
     private lateinit var viewModel : MyViewModel
+
+    // 뒤로가기 두번 연속 클릭으로 종료 변수 설정
+    // 2 초내에 더블 클릭시...
+    private val TIME_INTERVAL = 2000
+    private var mBackPressed: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +46,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         initBottomNav()
+    }
+    override fun onBackPressed() {
+        // 연속 두 번 클릭하여 종료하기
+        if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis()) {
+            finishAffinity()
+            return
+        } else {
+            Toast.makeText(this, "Double tap to close app", Toast.LENGTH_SHORT).show()
+        }
+        mBackPressed = System.currentTimeMillis()
     }
 
     private fun initBottomNav() {
