@@ -1,6 +1,7 @@
 package com.example.mywiki_interviewtest.DI
 
 import com.example.mywiki_interviewtest.repository.UploadRepository
+import com.example.mywiki_interviewtest.repository.WikiRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,5 +15,11 @@ class RepositoryModule {
     @Singleton
     fun provideUploadRepository():UploadRepository{
         return UploadRepository()
+    }
+
+    @Provides
+    @Singleton
+    fun provideWikiRepository():WikiRepository{
+        return WikiRepository()
     }
 }

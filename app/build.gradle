@@ -62,6 +62,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx'
     // Firebase Storage
     implementation 'com.google.firebase:firebase-storage-ktx'
+    // Task Extension function for firebase
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.1'
 
     // android-lottie = https://github.com/airbnb/lottie-android
     implementation "com.airbnb.android:lottie:4.1.0"

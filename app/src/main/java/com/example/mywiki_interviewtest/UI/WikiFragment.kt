@@ -1,60 +1,84 @@
 package com.example.mywiki_interviewtest.UI
 
+import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.mywiki_interviewtest.R
+import com.example.mywiki_interviewtest.UI.adapter.WikiRecyclerAdapter
+import com.example.mywiki_interviewtest.databinding.FragmentWikiBinding
+import com.example.mywiki_interviewtest.util.ApiResponse
+import com.example.mywiki_interviewtest.viewModel.MyViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [WikiFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+@AndroidEntryPoint
 class WikiFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
+    private lateinit var binding: FragmentWikiBinding
+    private lateinit var viewModel: MyViewModel
+    lateinit var wikiAdapter : WikiRecyclerAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_wiki, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_wiki, container, false)
+        viewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
+        wikiAdapter = (activity as MainActivity).wikiAdapter
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment WikiFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            WikiFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            getPost()
+        }
+        initRecyclerView()
+    }
+
+
+    fun initRecyclerView(){
+        binding.wikiRecycler.apply {
+            adapter = wikiAdapter
+            layoutManager = LinearLayoutManager(activity)
+        }
+    }
+
+    suspend fun getPost(){
+        viewModel.getPost().collect {
+            when(it){
+                is ApiResponse.Success -> {
+                    coroutineScope {
+                        launch(Dispatchers.Main) {
+                            Log.d("WikiFragment", "getPost Data: ${it.data}")
+                            binding.progressBar.isGone = true
+                            wikiAdapter.differ.submitList(it.data)
+                        }
+                    }
+                }
+                is ApiResponse.Loading ->{
+                    coroutineScope {
+                        launch(Dispatchers.Main) {
+                            binding.progressBar.isGone = false
+                        }
+                    }
+                }
+                is ApiResponse.Error -> {
+                    Log.d("WikiFragment", "getPost Error: ${it.message}")
                 }
             }
+        }
     }
 }
