@@ -14,6 +14,8 @@
         <!-- Customize your theme here. -->
         <item name="bottomNavigationStyle">@style/Widget.MaterialComponents.BottomNavigationView.Colored</item>
         <item name="android:windowContentTransitions">true</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+
         <item name="actionBarTheme">@style/ThemeOverlay.Actionbar</item>
     </style>
 

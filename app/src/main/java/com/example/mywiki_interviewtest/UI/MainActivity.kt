@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         // initial fragment is wikiFragment
         binding.bottomNavigation.selectedItemId = R.id.item_wiki
 //        replaceFragment(wikiFragment)
-        addFragment(wikiFragment, "wiki")
+        replaceFragment(wikiFragment, "wiki")
 
         binding.addButton.setOnSingleClickListener {
             if (showCoverContainer) {
@@ -113,8 +113,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun replaceFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().replace(R.id.mainContainer, fragment).commit()
+    private fun replaceFragment(fragment: Fragment, tag: String) {
+        supportFragmentManager.beginTransaction().replace(R.id.mainContainer, fragment, tag).commit()
     }
     private fun showFragment(fragment: Fragment){
         supportFragmentManager.beginTransaction().show(fragment).commit()

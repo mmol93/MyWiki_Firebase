@@ -32,6 +32,7 @@ class WikiFragment : Fragment() {
     private lateinit var binding: FragmentWikiBinding
     private lateinit var viewModel: MyViewModel
     lateinit var wikiAdapter : WikiRecyclerAdapter
+    var showProgress = true
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,6 +53,7 @@ class WikiFragment : Fragment() {
 
         binding.swipeRefresh.setOnRefreshListener {
             binding.swipeRefresh.isRefreshing = true
+            showProgress = false
             CoroutineScope(Dispatchers.IO).launch {
                 getPost()
             }
@@ -83,7 +85,7 @@ class WikiFragment : Fragment() {
                     coroutineScope {
                         launch(Dispatchers.Main) {
                             Log.d("WikiFragment", "getPost Data: ${it.data}")
-                            binding.progressBar.isGone = true
+                            if (showProgress) binding.progressBar.isGone = true
                             wikiAdapter.differ.submitList(it.data)
                             binding.swipeRefresh.isRefreshing = false
                         }
@@ -92,7 +94,7 @@ class WikiFragment : Fragment() {
                 is ApiResponse.Loading ->{
                     coroutineScope {
                         launch(Dispatchers.Main) {
-                            binding.progressBar.isGone = false
+                            if (showProgress) binding.progressBar.isGone = false
                         }
                     }
                 }
