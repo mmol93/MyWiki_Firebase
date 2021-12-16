@@ -13,7 +13,6 @@ fun Context.showToast(msg:String){
     Toast.makeText(App.context, msg, Toast.LENGTH_SHORT).show()
 }
 
-// 키보드 숨기기
 fun Context.hideKeyboard(view: View){
     val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputManager.hideSoftInputFromWindow(view.windowToken, 0)

@@ -26,8 +26,8 @@ class MainActivity : AppCompatActivity() {
     private var showCoverContainer = true
     private lateinit var viewModel : MyViewModel
 
-    // 뒤로가기 두번 연속 클릭으로 종료 변수 설정
-    // 2 초내에 더블 클릭시...
+    
+    
     private val TIME_INTERVAL = 2000
     private var mBackPressed: Long = 0
 
@@ -37,15 +37,15 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this).get(MyViewModel::class.java)
         binding.lifecycleOwner = this
 
-        // 다크모드 사용 안함
+        
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-        // 액션바 제거
+        
         supportActionBar?.hide()
 
-        // initial fragment is wikiFragment
+        
         binding.bottomNavigation.selectedItemId = R.id.item_wiki
-//        replaceFragment(wikiFragment)
+
         replaceFragment(wikiFragment, "wiki")
 
         binding.addButton.setOnSingleClickListener {
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         initBottomNav()
     }
     override fun onBackPressed() {
-        // 연속 두 번 클릭하여 종료하기
+        
         if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis()) {
             finishAffinity()
             return
@@ -74,13 +74,13 @@ class MainActivity : AppCompatActivity() {
             setOnItemSelectedListener { item ->
                 when (item.itemId) {
                     R.id.item_upload -> {
-                        // add 버튼을 한 번도 클릭 안했을 때는 uploadFragment 올 때 마다 coverContainer 보여주기
+                        
                         if (showCoverContainer){
                             binding.coverContainer.isGone = false
                             binding.mainContainer.isGone = true
                         }
 
-                        // fragment를 보여주거나 숨기거나
+                        
                         if (supportFragmentManager.findFragmentByTag("home") != null){
                             showFragment(uploadFragment)
                         }else{
@@ -89,14 +89,14 @@ class MainActivity : AppCompatActivity() {
                         if (supportFragmentManager.findFragmentByTag("wiki") != null){
                             hideFragment(wikiFragment)
                         }
-//                        replaceFragment(uploadFragment)
+
                     }
                     R.id.item_wiki -> {
-                        // wikiFragment에서는 항상 coverFragment 가리기
+                        
                         binding.coverContainer.isGone = true
                         binding.mainContainer.isGone = false
 
-                        // fragment를 보여주거나 숨기거나
+                        
                         if (supportFragmentManager.findFragmentByTag("home") != null){
                             hideFragment(uploadFragment)
                         }
@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity() {
                         }else{
                             addFragment(wikiFragment, "wiki")
                         }
-//                        replaceFragment(wikiFragment)
+
                     }
                 }
                 true

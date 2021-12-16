@@ -39,7 +39,6 @@ object FirebaseStorage {
         if (firebaseImagesRef != null) {
             val ONE_MEGABYTE: Long = 1024 * 1024 * 20
             firebaseImagesRef.getBytes(ONE_MEGABYTE).addOnSuccessListener {
-                // byteArray를 bitmap으로 변환
                 val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
                 this.findViewById<ImageView>(this.id).setImageBitmap(bitmap)
                 Log.d("ProfileLayout", "picture load test")
