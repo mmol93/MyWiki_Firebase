@@ -78,4 +78,7 @@ dependencies {
     kapt 'androidx.hilt:hilt-compiler:1.0.0'
     implementation "androidx.hilt:hilt-work:1.0.0"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+
+    // PhotoView - https://github.com/Baseflow/PhotoView
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
 }

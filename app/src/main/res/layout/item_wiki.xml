@@ -46,6 +46,7 @@
                     android:lines="3"
                     android:textAppearance="?attr/textAppearanceBody2"
                     android:textColor="?android:attr/textColorSecondary"
+                    android:transitionName="detailTransit"
                     />
             </LinearLayout>
         </LinearLayout>
