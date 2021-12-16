@@ -1,4 +1,8 @@
 # MyWiki_InterviewTest
+MyWiki is simple version of wikipidia.
+
+Everyone can add post and change it
+
 
 * ## Features
 1. use Firebase Storage for picutre data
