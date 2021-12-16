@@ -20,11 +20,11 @@ class WikiRepository {
 
         emit(ApiResponse.Loading())
 
-        // 모든 문서 가져오기
+        
         val documents = storageCollection.get().await()
         for (document in documents){
             val postData = document.data
-            // 항상 0번 인덱스에 원하는 값이 있기 때문에 0번 인덱스의 값을 가져오게 한다
+            
             posts.add(Post(title = postData.keys.elementAt(0), description = postData.values.elementAt(0).toString()))
         }
         Log.d("Firebase", "posts: $posts")

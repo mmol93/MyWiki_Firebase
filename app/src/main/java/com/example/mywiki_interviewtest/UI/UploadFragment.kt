@@ -45,27 +45,6 @@ class UploadFragment : Fragment() {
     lateinit var viewModel: MyViewModel
     private var postBitmap: Bitmap? = null
     val REQ_GALLERY = 0
-//    private val startForResult =
-//        registerForActivityResult(ActivityResultContracts.GetContent()) {
-//            Log.d("UploadFragment", "registerForActivityResult for imageView is called")
-//            if (it != null) {
-//                // Uri에 있는 image 데이터를 bitmap으로 변환하기
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-//                    postBitmap = ImageDecoder.decodeBitmap(
-//                        ImageDecoder.createSource(
-//                            requireContext().getContentResolver(),
-//                            it
-//                        )
-//                    )
-//                } else {
-//                    postBitmap = MediaStore
-//                        .Images.Media.getBitmap(requireContext().getContentResolver(), it)
-//                }
-//                Glide.with(requireContext()).load(it).into(binding.imageView)
-//                binding.imageView.isGone = false
-//                binding.addPictureButton.isGone = true
-//            }
-//        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
