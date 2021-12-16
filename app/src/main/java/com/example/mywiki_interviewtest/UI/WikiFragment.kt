@@ -1,8 +1,11 @@
 package com.example.mywiki_interviewtest.UI
 
+import android.app.ActivityOptions
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
+import android.util.Pair
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +14,6 @@ import androidx.core.view.isGone
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.mywiki_interviewtest.R
 import com.example.mywiki_interviewtest.UI.adapter.WikiRecyclerAdapter
 import com.example.mywiki_interviewtest.databinding.FragmentWikiBinding
@@ -23,6 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class WikiFragment : Fragment() {
@@ -46,6 +49,23 @@ class WikiFragment : Fragment() {
             getPost()
         }
         initRecyclerView()
+
+        binding.swipeRefresh.setOnRefreshListener {
+            binding.swipeRefresh.isRefreshing = true
+            CoroutineScope(Dispatchers.IO).launch {
+                getPost()
+            }
+        }
+        wikiAdapter.setOnItemClickListener { post, view ->
+            val intent = Intent(context, DetailActivity::class.java)
+            intent.putExtra("post", post)
+
+            val intentOption = ActivityOptions.makeSceneTransitionAnimation(
+                requireActivity(),
+                Pair.create(view.findViewById(R.id.descriptionText), "detailTransit")
+            )
+            startActivity(intent, intentOption.toBundle())
+        }
     }
 
 
@@ -65,6 +85,7 @@ class WikiFragment : Fragment() {
                             Log.d("WikiFragment", "getPost Data: ${it.data}")
                             binding.progressBar.isGone = true
                             wikiAdapter.differ.submitList(it.data)
+                            binding.swipeRefresh.isRefreshing = false
                         }
                     }
                 }
