@@ -5,9 +5,8 @@ import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import com.example.mywiki_interviewtest.R
 import com.example.mywiki_interviewtest.databinding.ActivityDetailBinding
-import android.content.Intent
 import com.example.mywiki_interviewtest.Ext.setOnSingleClickListener
-import com.example.mywiki_interviewtest.UI.FirebaseStorage.storageDownload
+import com.example.mywiki_interviewtest.util.FirebaseStorage.storageDownload
 import com.example.mywiki_interviewtest.model.Post
 
 

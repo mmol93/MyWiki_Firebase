@@ -1,4 +1,4 @@
-package com.example.mywiki_interviewtest.UI
+package com.example.mywiki_interviewtest.util
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory

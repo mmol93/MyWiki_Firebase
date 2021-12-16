@@ -15,12 +15,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.PermissionChecker.checkCallingOrSelfPermission
 import androidx.core.view.isGone
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.mywiki_interviewtest.Ext.hideKeyboard
@@ -30,6 +28,7 @@ import com.example.mywiki_interviewtest.R
 import com.example.mywiki_interviewtest.databinding.FragmentUploadBinding
 import com.example.mywiki_interviewtest.model.Post
 import com.example.mywiki_interviewtest.util.ApiResponse
+import com.example.mywiki_interviewtest.util.FirebaseStorage
 import com.example.mywiki_interviewtest.viewModel.MyViewModel
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
