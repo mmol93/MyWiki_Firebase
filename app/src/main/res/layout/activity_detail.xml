@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,12 +13,11 @@
         android:orientation="vertical"
         android:layout_margin="15dp" >
 
-
-        <ImageView
+        <com.github.chrisbanes.photoview.PhotoView
             android:id="@+id/detailImage"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleType="centerCrop" />
+            android:layout_height="300dp"
+            android:scaleType="fitCenter"/>
 
         <TextView
             android:id="@+id/detailText"
@@ -26,7 +26,9 @@
             android:transitionName="detailTransit"
             android:textSize="15sp"
             android:layout_marginTop="15dp"
-            android:text="TextView" />
+            android:text="TextView"
+            android:layout_marginBottom="30dp"/>
 
     </LinearLayout>
 </ScrollView>
+</layout>

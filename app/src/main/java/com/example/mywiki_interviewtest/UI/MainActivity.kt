@@ -3,6 +3,7 @@ package com.example.mywiki_interviewtest.UI
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isGone
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -32,10 +33,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         viewModel = ViewModelProvider(this).get(MyViewModel::class.java)
         binding.lifecycleOwner = this
+
+        // 다크모드 사용 안함
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+        // 액션바 제거
+        supportActionBar?.hide()
 
         // initial fragment is wikiFragment
         binding.bottomNavigation.selectedItemId = R.id.item_wiki
