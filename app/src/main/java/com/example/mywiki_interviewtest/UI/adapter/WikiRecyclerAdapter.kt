@@ -1,16 +1,14 @@
 package com.example.mywiki_interviewtest.UI.adapter
 
-import android.graphics.Bitmap
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mywiki_interviewtest.Ext.setOnSingleClickListener
-import com.example.mywiki_interviewtest.UI.FirebaseStorage.storageDownload
+import com.example.mywiki_interviewtest.util.FirebaseStorage.storageDownload
 import com.example.mywiki_interviewtest.databinding.ItemWikiBinding
 import com.example.mywiki_interviewtest.model.Post
 
