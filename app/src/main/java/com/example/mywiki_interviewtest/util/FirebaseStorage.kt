@@ -23,7 +23,6 @@ object FirebaseStorage {
         val data = baos.toByteArray()
         val uploadTask = imageRef.putBytes(data)
         uploadTask.addOnFailureListener {
-            // Handle unsuccessful uploads
             Log.d("Firebase", "imageUpload Failed")
         }.addOnSuccessListener { taskSnapshot ->
             Log.d("Firebase", "imageUpload Success")
@@ -43,7 +42,6 @@ object FirebaseStorage {
                 this.findViewById<ImageView>(this.id).setImageBitmap(bitmap)
                 Log.d("ProfileLayout", "picture load test")
             }.addOnFailureListener {
-                // Handle any errors
                 Toast.makeText(App.context, "profile download failed", Toast.LENGTH_SHORT).show()
             }
         }
