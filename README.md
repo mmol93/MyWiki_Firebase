@@ -1,4 +1,4 @@
-# MyWiki_InterviewTest
+# MyWiki_Firebase
 MyWiki is simple version of wikipidia.
 
 Everyone can add post and change it
